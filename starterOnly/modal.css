@@ -160,8 +160,8 @@ main {
 .smFont {
   font-size: 16px;
 }
-
-.bground {
+/*ajout de class du .bground-validation Marwa*/
+.bground, .bground-validation {
   display: none;
   position: fixed;
   z-index: 1;
@@ -191,6 +191,21 @@ main {
   padding: 15px 8%;
   margin: 15px auto;
 }
+/*mise en page de la modal validation */
+.modal-body-merci{
+    height: 670px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: initial;
+    text-align: center;
+}
+.btn-centrer a {
+    text-decoration: none;
+    color: white;
+}
+/*=======*/
 
 label {
   font-family: var(--font-default);
@@ -468,6 +483,11 @@ input[data-error]::after {
   padding: 15px 23px;
   margin: 0;
   margin-top: 59px;
+}
+/* centrer le bouton fermer de la modal validation */
+.btn-centrer{
+    margin: auto;
+    margin-top: 59px;
 }
 .hero-img {
   grid-column: span 8;
