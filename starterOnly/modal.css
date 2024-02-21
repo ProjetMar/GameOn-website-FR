@@ -56,27 +56,27 @@ img {
   background-color: #ff0000;
   color: #ffffff;
   border-radius: 15px;
+  /*mettre la dec manquante quant on survole le lien*/
+  text-decoration: underline;
 }
-
-.topnav a.active {
+/*-----------doit etre enlever (accueil)---------*/
+/* .topnav a.active {
   background-color: #ff0000;
   color: #ffffff;
   border-radius: 15px;
-}
+}  */
 
 .topnav .icon {
   display: none;
 }
-
-@media screen and (max-width: 768px) {
+/*=========================3eme modification pour l'icon de nav tablette====================*/
+/*changer le max-width de 768 à 1030 pour corriger le nav entre ces deux valeur alors afficher l'icon de le 1030*/
+@media screen and (max-width: 1030px) {
   .topnav a {display: none;}
   .topnav a.icon {
     float: right;
     display: block;
   }
-}
-
-@media screen and (max-width: 768px) {
   .topnav.responsive {position: relative;}
   .topnav.responsive .icon {
     position: absolute;
@@ -88,18 +88,22 @@ img {
     display: block;
     text-align: left;
   }
+  /*--------------active-------------*/
+  .topnav a.active {
+    margin-top: 60px
+  } 
 }
 
-
-
- @media screen and (max-width: 540px) {
+/*-------------n'a pas d'utilité-----------------*/
+ /* @media screen and (max-width: 540px) {
   .topnav a {display: none;}
   .topnav a.icon {
     float: right;
     display: block;
     margin-top: -15px;
   }
-} 
+}  */
+
 
 main {
   font-size: 130%;
@@ -422,6 +426,17 @@ input[data-error]::after {
   text-align: left;
   min-width: 424px;
 }
+/*=========================2eme modification pour l'image et le bouton je m'inscris===================*/
+/*pour laisser plus de place pour l'image je veux ajouter cette propiete qui permet de modifier la taille de block noire */
+/*bouton modifier le padding-right pour qu'il ne retoune pas à la ligne */
+@media screen and (max-width: 1030px)  {
+    .hero-content{
+        min-width: 0px;
+        padding-right: 15px;
+    }
+    
+}
+
 .hero-content::after {
   content: "";
   width: 100%;
@@ -478,6 +493,22 @@ footer {
   padding-right: 2vw;
   margin: 0 20px;
 }
+
+/*=========================1ere modification pour le text===================*/
+/*corriger le probleme d'affichage pour les tablettes (text qui depasse l'ecran ) */
+@media screen and (max-width: 1000px) {
+
+    .hero-headline{
+        font-size: 4.5rem;
+    }
+    
+}
+/*-------------text pour telephone portable de petite taille exemble S8+ -----------*/
+@media screen and (max-width: 540px){
+    .hero-headline{
+        font-size: 3rem;
+    }
+}
 @media screen and (max-width: 800px) {
   .hero-section {
     display: block;
@@ -494,8 +525,9 @@ footer {
   .hero-content .btn-signup {
     display: none;
   }
+  /*enlever la propiété de font-size: 4.5rem; car c'est deja mentionner dans le media 1000 */ 
   .hero-headline {
-    font-size: 4.5rem;
+    
     white-space: normal;
   }
   .hero-text {
