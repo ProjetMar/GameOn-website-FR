@@ -9,8 +9,17 @@ function editNav() {
 
 // DOM Elements
 const modalbg = document.querySelector(".bground");
+const modalbgValidation = document.querySelector(".bground-validation")
 const modalBtn = document.querySelectorAll(".modal-btn");
+const modalBtnValidation = document.querySelector(".modal-btn-validation")
 const formData = document.querySelectorAll(".formData");
+
+modalBtnValidation.addEventListener("click", (event)=>{
+    event.preventDefault();
+    console.log("hello");
+    modalbg.style.display = "none";
+    modalbgValidation.style.display ="block";
+})
 
 // launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
