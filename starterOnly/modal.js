@@ -13,13 +13,7 @@ const modalbgValidation = document.querySelector(".bground-validation")
 const modalBtn = document.querySelectorAll(".modal-btn");
 const modalBtnValidation = document.querySelector(".modal-btn-validation")
 const formData = document.querySelectorAll(".formData");
-
-modalBtnValidation.addEventListener("click", (event)=>{
-    event.preventDefault();
-    console.log("hello");
-    modalbg.style.display = "none";
-    modalbgValidation.style.display ="block";
-})
+const formDataInput = document.querySelectorAll(".formData input")
 
 // launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
@@ -28,5 +22,12 @@ modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 function launchModal() {
   modalbg.style.display = "block";
 }
-
+function launchModalSecond(){
+    modalbg.style.display = "none";
+    modalbgValidation.style.display ="block";
+}
+modalBtnValidation.addEventListener("click", (event)=>{
+    event.preventDefault();
+    launchModalSecond();
+})
 
