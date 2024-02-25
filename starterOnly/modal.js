@@ -19,17 +19,30 @@ const formDataInput = document.querySelectorAll(".formData input")
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 
 // launch modal form
-function launchModal() {
+function launchModal(data) {
   modalbg.style.display = "block";
+  
+    console.log(data)
+  
 }
 function launchModalSecond(){
     modalbg.style.display = "none";
     modalbgValidation.style.display ="block";
 }
-modalBtnValidation.addEventListener("click", (event)=>{
-    event.preventDefault();
-    launchModalSecond();
+
+document.querySelector('form').addEventListener("submit", (e)=>{
+    e.preventDefault();
+    // let form = e.currentTarget
+    // const data = new FormData(form);
+    // console.log(data);
+    gererFormulaire();
 })
+// modalBtnValidation.addEventListener("click", (event)=>{
+//      event.preventDefault();
+
+//     gererFormulaire();
+
+// })
 
 //===========================================
 // ajouter des messages d'erreur quand l'utilisateur à fin de saisir le champ 
@@ -104,7 +117,7 @@ function gererFormulaireAuSaisie(){
                             
                             try{
                                
-                               validerBirthdate(event.target.value);
+                               validerDateDeNaissance(event.target.value);
                                afficherMessageErreur(nameElement, element, "");
                                
                            }catch(erreur){
@@ -121,7 +134,7 @@ function gererFormulaireAuSaisie(){
                             event.preventDefault();
                             
                             try{
-                               btnRadio(inputs);
+                               validerChoixParticipation(inputs);
                                afficherMessageErreur(nameElement, element, "");
                                
                            }catch(erreur){
@@ -153,7 +166,7 @@ function gererFormulaireAuSaisie(){
                            event.preventDefault();
                            
                            try{
-                               validerCondition(inputs[0]);
+                               validerConditionsUtilisation(inputs[0]);
                                afficherMessageErreur(nameElement, element, "");
                                
                            }catch(erreur){
@@ -171,73 +184,60 @@ function gererFormulaireAuSaisie(){
 gererFormulaireAuSaisie();
 
 
-function validerBirthdate (birthdate){
-   if(birthdate == false || birthdate == ""){
-       throw new Error("Vous devez entrer votre date de naissance.");
-   }
-}
-function validerCondition(condition){
-   if(condition.checked == false){
-       throw new Error("Vous devez vérifier que vous acceptez les termes et conditions.")
-   }
-}
-
-function btnRadio(inputs){
-   // Gestion de l'événement change sur les boutons radios. 
-   //let listeBtnRadio = element.getElementsByTagName('span');
-
-   let choixTerminer = false; 
-   let i=0;
-   console.log(inputs);
-   while(i<inputs.length && choixTerminer === false){
-       // inputs[i].addEventListener("change", (event) => {
-            
-
-       //     choixTerminer = event.checked; 
-       //     console.log(choixTerminer);
-       //     i++   
-      
-       //})
-       choixTerminer = inputs[i].checked
-       console.log(choixTerminer);
-       
-       i++
-   
-   }
-   if (choixTerminer === false){
-       throw new Error("Vous devez choisir une option.");
-   }
-       
-}
-
-function validerQuantity(quantity)   {
-   let quantityRegex = new RegExp("[0-99]")
-   if(!quantityRegex.test(quantity)){
-       throw new Error ("nombre de concours doit etre saisi")
+function validerPrenom(prenom) {
+   if (prenom.length < 2) {
+       throw new Error("Veuillez entrer 2 caractères ou plus pour le champ du prénom." );
    }
 }
 
 // Cette fonction prend un nom en paramètre et valide qu'il est au bon format
 function validerNom( nom) {
-  if (nom.length < 2) {
-      throw new Error("Veuillez entrer 2 caractères ou plus pour le champ du nom." );
-  }
-   
+    if (nom.length < 2) {
+        throw new Error("Veuillez entrer 2 caractères ou plus pour le champ du nom." );
+    }
 }
-function validerPrenom(prenom) {
-   if (prenom.length < 2) {
-       throw new Error("Veuillez entrer 2 caractères ou plus pour le champ du prénom." );
-   }
-    
-}
+
 //Cette fonction prend un email en paramètre et valide qu'il est au bon format
 function validerEmail(email) {
    let emailRegExp = new RegExp("[a-z0-9._-]+@[a-z0-9._-]+\\.[a-z0-9._-]+");
    if (!emailRegExp.test(email)) {
        throw new Error("L'email n'est pas valide.");
    }
-   
 }
+
+function validerDateDeNaissance (birthdate){
+    if(birthdate == false || birthdate == ""){
+        throw new Error("Vous devez entrer votre date de naissance.");
+    }
+}
+
+function validerQuantity(quantity)   {
+    let quantityRegex = new RegExp("[0-99]")
+    if(!quantityRegex.test(quantity)){
+        throw new Error ("nombre de concours doit etre saisi")
+    }
+}
+
+function validerChoixParticipation(inputs){
+    // Gestion de l'événement change sur les boutons radios. 
+ 
+    let choixTerminer = false; 
+    let i=0;
+    while(i<inputs.length && choixTerminer === false){
+        choixTerminer = inputs[i].checked
+        i++
+    }
+ 
+    if (choixTerminer === false){
+        throw new Error("Vous devez choisir une option.");
+    }
+ }
+
+ function validerConditionsUtilisation(condition){
+    if(condition.checked == false){
+        throw new Error("Vous devez vérifier que vous acceptez les termes et conditions.")
+    }
+ }
 
 
 //Cette fonction affiche le message d'erreur passé en paramètre. 
@@ -264,6 +264,74 @@ function afficherMessageErreur( nameElement, element, message) {
 
 // let inputForm = document.querySelectorAll(".formData input");
 // inputForm.forEach((btn)=>btn.addEventListener("change", gererFormulaire()));
+
+//Cette fonction permet de récupérer les informations dans le formulaire
+function gererFormulaire(){
+    let erreurDetecter = false;
+    
+      formData.forEach((element)=>{
+            let inputs= element.getElementsByTagName("input");
+            let nameElement = inputs[0].name;
+            console.log(nameElement);
+            let content = inputs[0].value;
+            
+            try{
+                switch(nameElement){
+                    case 'first':
+                        validerPrenom(content);
+                        
+                        
+                    break;
+                    case 'last':
+                        validerNom(content);
+                        
+                        
+                    break;
+                    case 'email':
+                        validerEmail(content);
+                        
+                    break;
+
+                    case 'birthdate':
+                        validerDateDeNaissance(content);
+                    break;
+
+                    case 'location':
+                        validerChoixParticipation(inputs);
+                    break;
+                    case 'quantity':
+                        validerQuantity(content);
+                    break;
+
+                    case 'checkbox':
+                        validerConditionsUtilisation(inputs[0]);
+                    break;
+                }
+                // console.log(content);
+                // if (nameElement === "first"){
+                //     validerPrenom(content);
+                // }else if (nameElement == "last"){
+                //     validerNom(content);
+                // }
+                for(i=0; i<formData.length ; i++){
+                    afficherMessageErreur(nameElement, element, "");
+                }
+                
+            }catch(erreur){
+                afficherMessageErreur( nameElement, element, erreur.message );
+                erreurDetecter = true;
+                 
+            }
+            
+           
+        })
+
+        
+        if (erreurDetecter === false){
+
+             launchModalSecond();
+        } 
+}
 
 
 
