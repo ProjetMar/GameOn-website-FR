@@ -37,152 +37,6 @@ document.querySelector('form').addEventListener("submit", (e)=>{
     // console.log(data);
     gererFormulaire();
 })
-// modalBtnValidation.addEventListener("click", (event)=>{
-//      event.preventDefault();
-
-//     gererFormulaire();
-
-// })
-
-//===========================================
-// ajouter des messages d'erreur quand l'utilisateur à fin de saisir le champ 
-//===========================================
-function gererFormulaireAuSaisie(){
-   
-    
-    formData.forEach((element)=>{
-            let inputs= element.getElementsByTagName("input");
-            let nameElement = inputs[0].name;
-           console.log(nameElement);
-           let content = inputs[0].value;
-           
-           
-               switch(nameElement){
-                   case 'first':
-                    document.getElementById(nameElement).addEventListener("change", (event)=>{
-                            event.preventDefault();
-                           
-                           try{
-                               validerPrenom(event.target.value);
-                               console.log(event.target.value);
-                               afficherMessageErreur(nameElement, element, "");
-                            
-                           }catch(erreur){
-                               afficherMessageErreur( nameElement, element, erreur.message );
-                              
-                                
-                           }
-                       })
-                       
-                       
-                       
-                    break;
-                    case 'last':
-                      
-                        document.getElementById(nameElement).addEventListener("change", (event)=>{
-                            event.preventDefault();
-                            
-                            try{
-                               validerNom(event.target.value);
-                               afficherMessageErreur(nameElement, element, "");
-                              
-                           }catch(erreur){
-                               afficherMessageErreur( nameElement, element, erreur.message );
-                             
-                                
-                           }
-                       })
-                       
-                    break;
-                    case 'email':
-                        document.getElementById(nameElement).addEventListener("change", (event)=>{
-                           event.preventDefault();
-                            
-                            try{
-                               validerEmail(event.target.value);
-                               afficherMessageErreur(nameElement, element, "");
-                               
-                           }catch(erreur){
-                               afficherMessageErreur( nameElement, element, erreur.message );
-                              
-                                
-                           }
-                        })
-                       
-                   break;
-                   case 'birthdate':
-                        document.getElementById(nameElement).addEventListener("change", (event)=>{
-                           event.preventDefault();
-                           console.log(inputs[0]);
-                            
-                            try{
-                               
-                               validerDateDeNaissance(event.target.value);
-                               afficherMessageErreur(nameElement, element, "");
-                               
-                           }catch(erreur){
-                               afficherMessageErreur( nameElement, element, erreur.message );
-                              
-                                
-                           }
-                        })
-                       
-                   break;
-                   
-                   case 'location':
-                        document.getElementsByName(nameElement).forEach((btn)=>btn.addEventListener("change", (event)=>{
-                            event.preventDefault();
-                            
-                            try{
-                               validerChoixParticipation(inputs);
-                               afficherMessageErreur(nameElement, element, "");
-                               
-                           }catch(erreur){
-                               afficherMessageErreur( nameElement, element, erreur.message );
-                              
-                                
-                           }
-                        }))
-                    break;
-                   case 'quantity':
-                       
-                       document.getElementById(nameElement).addEventListener("change", (event)=>{
-                           event.preventDefault();
-                           
-                           try{
-                               validerQuantity(event.target.value);
-                               afficherMessageErreur(nameElement, element, "");
-                               
-                           }catch(erreur){
-                               afficherMessageErreur( nameElement, element, erreur.message );
-                             
-                           }
-                               
-                        })
-                   break;
-                   case 'checkbox':
-                       
-                       document.getElementsByName(nameElement)[0].addEventListener("change", (event)=>{
-                           event.preventDefault();
-                           
-                           try{
-                               validerConditionsUtilisation(inputs[0]);
-                               afficherMessageErreur(nameElement, element, "");
-                               
-                           }catch(erreur){
-                               afficherMessageErreur( nameElement, element, erreur.message );
-                             
-                           }
-                               
-                        })
-                   break;
-               }                         
-           })
-
-}
-
-gererFormulaireAuSaisie();
-
 
 function validerPrenom(prenom) {
    if (prenom.length < 2) {
@@ -206,8 +60,11 @@ function validerEmail(email) {
 }
 
 function validerDateDeNaissance (birthdate){
+    let max = "2018-12-30"
     if(birthdate == false || birthdate == ""){
         throw new Error("Vous devez entrer votre date de naissance.");
+    }else if (birthdate > max){
+        throw new Error ("vous devez avoir au moins 8 ans pour participer")
     }
 }
 
@@ -254,16 +111,16 @@ function afficherMessageErreur( nameElement, element, message) {
        // let popup = document.querySelector(".modal-body")
        spanErreurMessage = document.createElement("span")
        spanErreurMessage.id = "error" + nameElement;
+       spanErreurMessage.style.color = '#FF4E60' ;
+       spanErreurMessage.style.fontSize = '13px';
+       element.getElementsByTagName("input")[0].style.border = '2px solid #FF4E60';
+        
        
        element.append(spanErreurMessage)
    }
    
    spanErreurMessage.innerText = message
 }
-
-
-// let inputForm = document.querySelectorAll(".formData input");
-// inputForm.forEach((btn)=>btn.addEventListener("change", gererFormulaire()));
 
 //Cette fonction permet de récupérer les informations dans le formulaire
 function gererFormulaire(){
@@ -307,14 +164,10 @@ function gererFormulaire(){
                         validerConditionsUtilisation(inputs[0]);
                     break;
                 }
-                // console.log(content);
-                // if (nameElement === "first"){
-                //     validerPrenom(content);
-                // }else if (nameElement == "last"){
-                //     validerNom(content);
-                // }
+                
                 for(i=0; i<formData.length ; i++){
                     afficherMessageErreur(nameElement, element, "");
+                    inputs[0].style.border ='none';
                 }
                 
             }catch(erreur){
