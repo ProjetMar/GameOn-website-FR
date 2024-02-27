@@ -160,8 +160,8 @@ main {
 .smFont {
   font-size: 16px;
 }
-/*ajout de class du .bground-validation Marwa*/
-.bground, .bground-validation {
+/*ajout de class du .bground-validation dans la premier version de code (ajouter une autre div pour 2 modal) Marwa*/
+.bground{
   display: none;
   position: fixed;
   z-index: 1;
