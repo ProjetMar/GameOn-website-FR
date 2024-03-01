@@ -16,49 +16,36 @@ const formDataInput = document.querySelectorAll(".formData input")
 
 const modalBody = document.querySelector(".modal-body");
 
-const contenuModalPremier = '<form name="reserve" action="https://pastebin.com/" method="get" onsubmit="return validate();">'
-+'<div class="formData"> <label for="first">Prénom</label><br> <input class="text-control" type="text" id="first" name="first" minlength="2"/><br></div>'
-+'<div class="formData"><label for="last">Nom</label><br><input class="text-control" type="text" id="last" name="last"/><br></div>'
-+'<div class="formData"><label for="email">E-mail</label><br><input class="text-control" type="email" id="email" name="email"/><br></div>'
-+'<div class="formData"><label for="birthdate">Date de naissance</label><br><input class="text-control" type="date" id="birthdate" name="birthdate"/><br></div>'
-+'<div class="formData"><label for="quantity">À combien de tournois GameOn avez-vous déjà participé ?</label><br><input type="number" class="text-control" id="quantity" name="quantity" min="0" max="99"></div>'
-+'<p class="text-label">A quel tournoi souhaitez-vous participer cette année ?</p>'
-+'<div class="formData"><input class="checkbox-input" type="radio" id="location1" name="location" value="New York"/>'
-+'<label class="checkbox-label" for="location1"><span class="checkbox-icon"></span>New York</label><input class="checkbox-input" type="radio" id="location2" name="location" value="San Francisco"/>'
-+'<label class="checkbox-label" for="location2"><span class="checkbox-icon"></span>San Francisco</label><input class="checkbox-input" type="radio" id="location3" name="location" value="Seattle"/>'
-+'<label class="checkbox-label" for="location3"><span class="checkbox-icon"></span>Seattle</label><input class="checkbox-input" type="radio" id="location4" name="location" value="Chicago"/>'
-+'<label class="checkbox-label" for="location4"><span class="checkbox-icon"></span>Chicago</label><input class="checkbox-input" type="radio" id="location5" name="location" value="Boston"/>'
-+'<label class="checkbox-label" for="location5"><span class="checkbox-icon"></span>Boston</label><input class="checkbox-input" type="radio" id="location6" name="location" value="Portland"/>'
-+'<label class="checkbox-label" for="location6"><span class="checkbox-icon"></span>Portland</label><!--retour à la ligne pour le span --></br></div>'
-+'<!--ajout dun name pour le inputs--><div class="formData"><input class="checkbox-input" type="checkbox" id="checkbox1" name="checkbox"  checked>'
-+'<label class="checkbox2-label" for="checkbox1" required><span class="checkbox-icon"></span>J\'ai lu et accepté les conditions d\'utilisation.</label><br>'
-+'<input class="checkbox-input" type="checkbox" id="checkbox2" />'
-+'<label class="checkbox2-label" for="checkbox2"><span class="checkbox-icon"></span>Je Je souhaite être prévenu des prochains évènements.</label><br></div>'
-+'<!--ajout d\'autre class modal-btn-validation et btn-signup des autres btns pour la mise en page et l\'affichage du modale merci--><input class="btn-submit btn-signup modal-btn-validation" type="submit" class="button" value="C\'est parti"/></form>';
-console.log(contenuModalPremier)
-const contenuModalSeconde = '<div class = "modal-body-merci"><p>Merci pour votre inscription</p></div>'
-+'<button class="btn-signup btn-centrer"><a href="index.html">fermer</a></button>';
-console.log(contenuModalSeconde)
+
 // ajout de class modal 
-class modal {
-    constructor(contenu){
-        this.contenu = contenu
-      }
-      get elementHTML (){
-         return (modalBody.innerHTML = this.contenu)
-      }
-      close(blockModal){
-        return( blockModal.style.display = "none")
-     }
-     open(blockModal){
-         return(blockModal.style.display = "block")
-     }
+// on peut utiliser les colse et open en static car on n'a pas besoin des class creer mar le modal juste ecrir modal.open et modal.close
+
+class Modal {
+    constructor(IdElement){
+        this.Id = IdElement
+    }
+      
+    get cacheElement (){
+        document.getElementById(this.Id).style.display = "none"
+    }
+    
+    get afficheElement(){
+        document.getElementById(this.Id).style.display = "block"
+    }
+
+    close (blockModal){
+        blockModal.style.display = "none"
+    }
+
+    open (blockModal){
+        blockModal.style.display = "block"
+    }
 }
-const modalPre = new modal (contenuModalPremier);
-const modalSec = new modal(contenuModalSeconde);
-modalPre.elementHTML;
+const elementModalForm = new Modal ("form");
+const elementModalSucces = new Modal("succes");
+elementModalForm.afficheElement;
 modalBtn.forEach((btn) => btn.addEventListener("click", ()=>{
-    modalPre.open(modalbg);
+    elementModalForm.open(modalbg);
 }));
 
 
@@ -80,7 +67,67 @@ modalBtn.forEach((btn) => btn.addEventListener("click", ()=>{
      // const data = new FormData(form);
      // console.log(data);
     gererFormulaire();
+    
+    const myFormData = new FormData(e.target);
+    const dataArray = [...myFormData];
+    console.log(dataArray);
+    const data = Object.fromEntries(dataArray);
+    console.log(data)
+    console.log(JSON.stringify(data));
+    if(gererFormulaire() == false){
+
+        var details = {
+            'api_dev_key': 'c8IZ4vI4bVNSHCYeT_TmKIuypXC0nJBM',
+            'api_user_key' : 'b37c8c97c339670c0b5dde8557ce32ef',
+             'api_option' : 'paste',
+             'api_paste_code' : JSON.stringify(data), 
+            
+        };
+        
+        var formBody = [];
+        for (var property in details) {
+          var encodedKey = encodeURIComponent(property);
+          var encodedValue = encodeURIComponent(details[property]);
+          formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+        
+                 // envoyer à l'api
+                    let options =  fetch("https://pastebin.com/api/api_post.php",{
+                        mode : 'no-cors',
+                        method: "POST",
+                        body: formBody,
+                        //'api_dev_key' : 'c8IZ4vI4bVNSHCYeT_TmKIuypXC0nJBM',
+                        //    'api_user_key' : 'MarProjectApprendre',
+                        
+                        headers: {
+                            "Content-Type" : "application/x-www-form-urlencoded;charset=UTF-8",
+                            //"Content-Type" : "application/x-www-form-urlencoded",
+                            'Access-Control-Allow-Origin' : '*'
+                        }
+                    });
+                    options.then(async(response)=>{
+                        try{
+                            const contenue = response;
+                            console.log(contenue)
+                            //Si la réponse du serveur est OK
+                            if (response.ok){
+                                
+                                console.log("ok");
+                            }
+                        }
+                        catch(e){
+                            //On demande l'erreur dans la console
+                            console.log(e);
+                        }
+                    }) 
+    }
+
+    
+    
+    
  })
+
 
 function validerPrenom(prenom) {
    if (prenom.length < 2) {
@@ -166,7 +213,26 @@ function afficherMessageErreur( nameElement, element, message) {
    spanErreurMessage.innerText = message
 }
 
+
+//ajout de l'attribute max aujourd'hui à l'input birthday 
+let today = new Date();
+let dd = today.getDate();
+let mm = today.getMonth() + 1; //January is 0!
+let yyyy = today.getFullYear();
+
+if (dd < 10) {
+   dd = '0' + dd;
+}
+
+if (mm < 10) {
+   mm = '0' + mm;
+} 
+    
+today = yyyy + '-' + mm + '-' + dd;
+document.getElementById("birthdate").setAttribute("max", today);
+
 //Cette fonction permet de récupérer les informations dans le formulaire
+// select le formulaire 
 const formData = document.querySelectorAll(".formData");
 function gererFormulaire(){
     let erreurDetecter = false;
@@ -228,10 +294,15 @@ function gererFormulaire(){
         if (erreurDetecter === false){
 
             
-            modalPre.close(modalbg)
-            modalSec.elementHTML
-            modalSec.open(modalbg)
+            elementModalForm.close(modalbg)
+            elementModalForm.cacheElement
+            elementModalSucces.open(modalbg)
+            elementModalSucces.afficheElement
+            
+            
+            
         } 
+        return(erreurDetecter)
 }
 
 
