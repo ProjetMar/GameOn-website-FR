@@ -58,7 +58,7 @@
         <div class="content">
             <a href="index.html"><span class="close"></span></a>
           <div class="modal-body">
-            <div id="form">
+            <div id="form" class="element-modal">
                 <form name="reserve" action="https://pastebin.com/" method="post" onsubmit="return validate();">
                     <div class="formData"> 
                         <label for="first">
@@ -128,7 +128,8 @@
                     </div>
                     <!--ajout dun name pour le inputs-->
                     <div class="formData">
-                        <input class="checkbox-input" type="checkbox" id="checkbox1" name="checkbox"  checked>
+                        <!-- supprimer le checked -->
+                        <input class="checkbox-input" type="checkbox" id="checkbox1" name="checkbox">
                         <label class="checkbox2-label" for="checkbox1" required>
                             <span class="checkbox-icon"></span>J'ai lu et accepté les conditions d'utilisation.
                         </label>
@@ -139,15 +140,14 @@
                         </label>
                         <br>
                     </div>
-                    <!--ajout d\'autre class modal-btn-validation et btn-signup des autres btns pour la mise en page et l\'affichage du modale merci-->
-                    <input class="btn-submit btn-signup modal-btn-validation" type="submit" class="button" value="C'est parti"/>
+                    <input class="btn-submit" type="submit" class="button" value="C'est parti"/>
                 </form>
             </div>
-            <div id="succes">
+            <div id="succes" class="element-modal">
                 <div id ="succes" class = "modal-body-merci">
                     <p>Merci pour votre inscription</p>
                 </div>
-                <button class="btn-signup btn-centrer">
+                <button class="btn-submit">
                     <a href="index.html">fermer</a>
                 </button>
             </div>

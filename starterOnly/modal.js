@@ -1,45 +1,48 @@
 function editNav() {
-  var x = document.getElementById("myTopnav");
-  if (x.className === "topnav") {
-    x.className += " responsive";
-  } else {
-    x.className = "topnav";
-  }
+    var x = document.getElementById("myTopnav");
+    if (x.className === "topnav") {
+        x.className += " responsive";
+    } else {
+        x.className = "topnav";
+    }
 }
 
 // DOM Elements
 const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
-const formDataInput = document.querySelectorAll(".formData input")
+const formDataInput = document.querySelectorAll(".formData input");
 const modalBody = document.querySelector(".modal-body");
-// ajout de class modal 
-// on peut utiliser les colse et open en static car on n'a pas besoin des class creer mar le modal juste ecrir modal.open et modal.close
+// ajout d'un classe modal qui permet d'afficher soit le modal de formulaire soit le modal du message de remerciement
 class Modal {
-    constructor(IdElement){
-        this.Id = IdElement
+    constructor(modalParentDiv, elementsClassName){
+        this.listPages = document.getElementsByClassName(elementsClassName);
+		this.modalParentDiv = modalParentDiv;
     }
-      
-    get cacheElement (){
-        document.getElementById(this.Id).style.display = "none"
+	// cacher tous les pages modal sauf la page avec l'id = Id passer en parametre 
+    displayPage(Id){
+		for(let i=0; i< this.listPages.length; i++){
+			this.listPages[i].style.display = "none";
+		}
+		document.getElementById(Id).style.display = "block";
     }
-    
-    get afficheElement(){
-        document.getElementById(this.Id).style.display = "block"
+    //fermer la modal
+    close (){
+        this.modalParentDiv.style.display = "none";
     }
-
-    close (blockModal){
-        blockModal.style.display = "none"
-    }
-
-    open (blockModal){
-        blockModal.style.display = "block"
+    //ouvrir la modal
+    open (){
+        this.modalParentDiv.style.display = "block";
     }
 }
-const elementModalForm = new Modal ("form");
-const elementModalSucces = new Modal("succes");
-elementModalForm.afficheElement;
+// Création d'une instance de la classe Modal
+const modal = new Modal (modalbg, "element-modal");
+
+// Affichage de la page "form" par défaut
+modal.displayPage("form");
+
+// Ajout d'un écouteur d'événement pour ouvrir la modale lorsque le bouton est cliqué
 modalBtn.forEach((btn) => btn.addEventListener("click", ()=>{
-    elementModalForm.open(modalbg);
+    modal.open();
 }));
 
 document.querySelector('form').addEventListener("submit", (e)=>{
@@ -55,21 +58,26 @@ document.querySelector('form').addEventListener("submit", (e)=>{
     formulaire.envoiFormulaire(data);  
 })
 //ajout de l'attribute max aujourd'hui à l'input birthday 
-let today = new Date();
-let dd = today.getDate();
-let mm = today.getMonth() + 1; //January is 0!
-let yyyy = today.getFullYear();
+function formatCurrentDate(){
+    let today = new Date();
+    let dd = today.getDate();
+    let mm = today.getMonth() + 1; //January is 0!
+    let yyyy = today.getFullYear();
 
-if (dd < 10) {
-   dd = '0' + dd;
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+        mm = '0' + mm;
+    } 
+    
+    today = yyyy + '-' + mm + '-' + dd;
+
+    return today;
 }
 
-if (mm < 10) {
-   mm = '0' + mm;
-} 
-    
-today = yyyy + '-' + mm + '-' + dd;
-document.getElementById("birthdate").setAttribute("max", today);
+document.getElementById("birthdate").setAttribute("max", formatCurrentDate());
 
 //Cette fonction permet de récupérer les informations dans le formulaire
 // select le formulaire 
@@ -82,55 +90,65 @@ class Formulaire {
         this.birthdate = document.getElementById("birthdate").value
         this.quantity = document.getElementById("quantity").value
         this.locations = document.getElementsByName("location")
-        this.condition = document.getElementById("checkbox1").value
+        this.condition = document.getElementById("checkbox1")
+        this.tabFonction = {
+            "first" : this.validateFirstName,
+            "last" : this.validateLasteName,
+            "email" : this.validateEmail,
+            "birthdate" : this.validateBirthdate,
+            "quantity" : this.validateCondition,
+            "location" : this.validateLocation,
+            "checkbox" : this.validateCondition
+        }
     }
-    valideFirstName(){
-        if(this.firstName.length < 2){
+    validateFirstName(self){
+        if(self.firstName.length < 2){
             throw new Error("Veuillez entrer 2 caractères ou plus pour le champ du prénom." );
         }
     }
-    valideLasteName(){
-        if(this.lastName.length < 2){  
+    validateLasteName(self){
+        if(self.lastName.length < 2){  
             throw new Error("Veuillez entrer 2 caractères ou plus pour le champ du nom." );  
         }
     }
-    valideEmail(){
+    validateEmail(self){
         let emailRegExp = new RegExp("[a-z0-9._-]+@[a-z0-9._-]+\\.[a-z0-9._-]+");
-        if (!emailRegExp.test(this.email)) {
+        if (!emailRegExp.test(self.email)) {
             throw new Error("L'email n'est pas valide.");
         }
     }
-    valideBirthdate(){
-        let max = "2018-12-30"
-        if(this.birthdate == false || this.birthdate == ""){
+    validateBirthdate(self){
+        //IB : ajout d'un min également
+        let max = "2011-12-30"
+        if(self.birthdate == false || self.birthdate == ""){
             throw new Error("Vous devez entrer votre date de naissance.");
-        }else if (this.birthdate > max){
-            throw new Error ("vous devez avoir au moins 8 ans pour participer")
+        }else if (self.birthdate > max){
+            throw new Error ("vous devez avoir au moins 13 ans pour participer")
         }
     }
-    valideQuantity(){
+    validateQuantity(self){
         let quantityRegex = new RegExp("[0-99]")
-        if(!quantityRegex.test(this.quantity)){
+        if(!quantityRegex.test(self.quantity)){
             throw new Error ("nombre de concours doit etre saisi")
         }
     }
-    valideLocation(){
+    validateLocation(self){
         let choixTerminer = false; 
         let i=0;
-        while(i<this.locations.length && choixTerminer === false){
-            choixTerminer = this.locations[i].checked
+        while(i<self.locations.length && choixTerminer === false){
+            choixTerminer = self.locations[i].checked
             i++
         }
         if (choixTerminer === false){
             throw new Error("Vous devez choisir une option.");
         }
     }
-    valideCondition(){
-        if(this.condition.checked == false){
+    validateCondition(self){
+        if(self.condition.checked == false){
             throw new Error("Vous devez vérifier que vous acceptez les termes et conditions.")
         }
     }
-    afficherMessageErreur( nameElement, element, message) {
+    displayMessageError( nameElement, element, message) {
         let spanErreurMessage = document.getElementById("error" + nameElement);
         if (!spanErreurMessage) {
             spanErreurMessage = document.createElement("span")
@@ -143,48 +161,49 @@ class Formulaire {
         spanErreurMessage.innerText = message
     }
     get gererForm(){
+        // IB est ce qu'on peut utilisr un map <champ, fonction>
         let erreurDetecter = false;
         formData.forEach((element)=>{
-            let inputs = element.getElementsByTagName("input")
+            let inputs = element.getElementsByTagName("input");
             let nameElement = inputs[0].name;
             try{
-                switch(nameElement){
+                /* switch(nameElement){
                     case "first":
-                        this.valideFirstName()
+                        this.validateFirstName()
                     break;
                     case "last":
-                        this.valideLasteName()
+                        this.validateLasteName()
                     break;
                     case "email":
-                        this.valideEmail()
+                        this.validateEmail()
                     break;
                     case "birthdate":
-                        this.valideBirthdate()
+                        this.validateBirthdate()
                     break;
                     case "quantity":
-                        this.valideQuantity()
+                        this.validateQuantity()
                     break;
                     case "location":
-                        this.valideLocation()
+                        this.validateLocation()
                     break;
                     case "checkbox":
-                        this.valideCondition()
+                        this.validateCondition()
                     break;
-                }
+                } */
+                this.tabFonction[nameElement](this);
                 for(let i=0; i<formData.length ; i++){
-                    this.afficherMessageErreur(nameElement, element, "");
+                    this.displayMessageError(nameElement, element, "");
                     inputs[0].style.border ='none';
                 }      
             }catch(erreur){
-                this.afficherMessageErreur( nameElement, element, erreur.message );
+                this.displayMessageError( nameElement, element, erreur.message );
                 erreurDetecter = true;
             }
         })
         if (erreurDetecter === false){   
-            elementModalForm.close(modalbg)
-            elementModalForm.cacheElement
-            elementModalSucces.open(modalbg)
-            elementModalSucces.afficheElement   
+            modal.close()
+            modal.displayPage("succes")   
+			modal.open()
         } 
         return(erreurDetecter)
     }
@@ -219,8 +238,7 @@ class Formulaire {
                     const contenue = response;
                     console.log(contenue)
                     //Si la réponse du serveur est OK
-                    if (response.ok){
-                        
+                    if (response.ok){                        
                         console.log("ok");
                     }
                 }
