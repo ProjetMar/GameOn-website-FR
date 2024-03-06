@@ -51,7 +51,7 @@ img {
   font-size: 20px;
   font-family: Roboto, sans-serif;
 }
-
+/*=================================modification liste nav ======================*/
 .topnav a:hover {
   background-color: #ff0000;
   color: #ffffff;
@@ -90,7 +90,7 @@ img {
   }
   /*--------------active-------------*/
   .topnav a.active {
-    margin-top: 60px
+    margin-top: 60px;
   } 
 }
 
@@ -160,8 +160,8 @@ main {
 .smFont {
   font-size: 16px;
 }
-/*ajout de class du .bground-validation Marwa*/
-.bground, .bground-validation {
+
+.bground{
   display: none;
   position: fixed;
   z-index: 1;
@@ -201,7 +201,7 @@ main {
     font-weight: initial;
     text-align: center;
 }
-.btn-centrer a {
+.btn-submit a {
     text-decoration: none;
     color: white;
 }
