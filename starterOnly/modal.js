@@ -48,7 +48,6 @@ modalBtn.forEach((btn) => btn.addEventListener("click", ()=>{
 document.querySelector('form').addEventListener("submit", (e)=>{
     e.preventDefault();
     let formulaire = new Formulaire()
-    formulaire.gererForm;
     const myFormData = new FormData(e.target);
     const dataArray = [...myFormData];
     console.log(dataArray);
@@ -73,8 +72,9 @@ function formatCurrentDate(){
     } 
     
     today = yyyy + '-' + mm + '-' + dd;
+    let maxDate = yyyy-13 + '-' + mm + '-' + dd;
 
-    return today;
+    return maxDate;
 }
 
 document.getElementById("birthdate").setAttribute("max", formatCurrentDate());
@@ -96,7 +96,7 @@ class Formulaire {
             "last" : this.validateLasteName,
             "email" : this.validateEmail,
             "birthdate" : this.validateBirthdate,
-            "quantity" : this.validateCondition,
+            "quantity" : this.validateQuantity,
             "location" : this.validateLocation,
             "checkbox" : this.validateCondition
         }
@@ -119,7 +119,7 @@ class Formulaire {
     }
     validateBirthdate(self){
         //IB : ajout d'un min également
-        let max = "2011-12-30"
+        let max = formatCurrentDate();
         if(self.birthdate == false || self.birthdate == ""){
             throw new Error("Vous devez entrer votre date de naissance.");
         }else if (self.birthdate > max){
@@ -161,40 +161,15 @@ class Formulaire {
         spanErreurMessage.innerText = message
     }
     get gererForm(){
-        // IB est ce qu'on peut utilisr un map <champ, fonction>
         let erreurDetecter = false;
         formData.forEach((element)=>{
             let inputs = element.getElementsByTagName("input");
             let nameElement = inputs[0].name;
             try{
-                /* switch(nameElement){
-                    case "first":
-                        this.validateFirstName()
-                    break;
-                    case "last":
-                        this.validateLasteName()
-                    break;
-                    case "email":
-                        this.validateEmail()
-                    break;
-                    case "birthdate":
-                        this.validateBirthdate()
-                    break;
-                    case "quantity":
-                        this.validateQuantity()
-                    break;
-                    case "location":
-                        this.validateLocation()
-                    break;
-                    case "checkbox":
-                        this.validateCondition()
-                    break;
-                } */
                 this.tabFonction[nameElement](this);
-                for(let i=0; i<formData.length ; i++){
-                    this.displayMessageError(nameElement, element, "");
-                    inputs[0].style.border ='none';
-                }      
+                this.displayMessageError(nameElement, element, "");
+                inputs[0].style.border ='none'; 
+                   
             }catch(erreur){
                 this.displayMessageError( nameElement, element, erreur.message );
                 erreurDetecter = true;
@@ -208,7 +183,7 @@ class Formulaire {
         return(erreurDetecter)
     }
     envoiFormulaire(data){
-        if(this.gererForm == false){
+        if(this.gererForm === false){
             let details = {
                 'api_dev_key': 'c8IZ4vI4bVNSHCYeT_TmKIuypXC0nJBM',
                 'api_user_key' : 'b37c8c97c339670c0b5dde8557ce32ef',
