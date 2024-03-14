@@ -47,16 +47,16 @@ modalBtn.forEach((btn) => btn.addEventListener("click", ()=>{
 
 document.querySelector('form').addEventListener("submit", (e)=>{
     e.preventDefault();
-    let formulaire = new Formulaire()
-    const myFormData = new FormData(e.target);
-    const dataArray = [...myFormData];
-    console.log(dataArray);
-    const data = Object.fromEntries(dataArray);
-    console.log(data)
-    console.log(JSON.stringify(data));
-    formulaire.envoiFormulaire(data);  
+    let formulaire = new Formulaire();
+    let errorDetected = formulaire.gererForm;
+    if (errorDetected === false){
+        const myFormData = new FormData(e.target);
+        const dataArray = [...myFormData];
+        const data = Object.fromEntries(dataArray);
+        formulaire.envoiFormulaire(data);
+    } 
 })
-//ajout de l'attribute max aujourd'hui à l'input birthday 
+//ajout de l'attribute max à l'input birthday 
 function formatCurrentDate(){
     let today = new Date();
     let dd = today.getDate();
@@ -161,7 +161,7 @@ class Formulaire {
         spanErreurMessage.innerText = message
     }
     get gererForm(){
-        let erreurDetecter = false;
+        let detectedError = false;
         formData.forEach((element)=>{
             let inputs = element.getElementsByTagName("input");
             let nameElement = inputs[0].name;
@@ -172,57 +172,54 @@ class Formulaire {
                    
             }catch(erreur){
                 this.displayMessageError( nameElement, element, erreur.message );
-                erreurDetecter = true;
+                detectedError = true;
             }
         })
-        if (erreurDetecter === false){   
-            modal.close()
+        if (detectedError === false){   
             modal.displayPage("succes")   
-			modal.open()
         } 
-        return(erreurDetecter)
+        return(detectedError)
     }
     envoiFormulaire(data){
-        if(this.gererForm === false){
-            let details = {
-                'api_dev_key': 'c8IZ4vI4bVNSHCYeT_TmKIuypXC0nJBM',
-                'api_user_key' : 'b37c8c97c339670c0b5dde8557ce32ef',
-                 'api_option' : 'paste',
-                 'api_paste_code' : JSON.stringify(data),     
-            };
-            let formBody = [];
-            for (let property in details) {
-              let encodedKey = encodeURIComponent(property);
-              let encodedValue = encodeURIComponent(details[property]);
-              formBody.push(encodedKey + "=" + encodedValue);
+        
+        let details = {
+            'api_dev_key': 'c8IZ4vI4bVNSHCYeT_TmKIuypXC0nJBM',
+            'api_user_key' : 'b37c8c97c339670c0b5dde8557ce32ef',
+                'api_option' : 'paste',
+                'api_paste_code' : JSON.stringify(data),     
+        };
+        let formBody = [];
+        for (let property in details) {
+            let encodedKey = encodeURIComponent(property);
+            let encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+        
+        // envoyer à l'api
+        let options =  fetch("https://pastebin.com/api/api_post.php",{
+            mode : 'no-cors',
+            method: "POST",
+            body: formBody,    
+            headers: {
+                "Content-Type" : "application/x-www-form-urlencoded;charset=UTF-8",
+                'Access-Control-Allow-Origin' : '*'
             }
-            formBody = formBody.join("&");
-            
-            // envoyer à l'api
-            let options =  fetch("https://pastebin.com/api/api_post.php",{
-                mode : 'no-cors',
-                method: "POST",
-                body: formBody,    
-                headers: {
-                    "Content-Type" : "application/x-www-form-urlencoded;charset=UTF-8",
-                    'Access-Control-Allow-Origin' : '*'
+        });
+        options.then(async(response)=>{
+            try{
+                const contenue = response;
+                console.log(contenue)
+                //Si la réponse du serveur est OK
+                if (response.ok){                        
+                    console.log("ok");
                 }
-            });
-            options.then(async(response)=>{
-                try{
-                    const contenue = response;
-                    console.log(contenue)
-                    //Si la réponse du serveur est OK
-                    if (response.ok){                        
-                        console.log("ok");
-                    }
-                }
-                catch(e){
-                    //On demande l'erreur dans la console
-                    console.log(e);
-                }
-            }) 
-        }   
+            }
+            catch(e){
+                //On demande l'erreur dans la console
+                console.log(e);
+            }
+        })   
     }   
 }
 
