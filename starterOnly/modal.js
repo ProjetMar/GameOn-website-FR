@@ -12,6 +12,14 @@ const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
 const formDataInput = document.querySelectorAll(".formData input");
 const modalBody = document.querySelector(".modal-body");
+const boutonsClose = document.querySelectorAll(".btn-close");
+
+//Ajout d'un écouteur d'événement pour fermer la modale lorsque les boutons x ou fermer sont cliqué
+boutonsClose.forEach((btn) => btn.addEventListener("click", ()=>{
+    modal.close();
+    modal.displayPage("form");
+}));
+
 // ajout d'un classe modal qui permet d'afficher soit le modal de formulaire soit le modal du message de remerciement
 class Modal {
     constructor(modalParentDiv, elementsClassName){
@@ -53,6 +61,7 @@ document.querySelector('form').addEventListener("submit", (e)=>{
         const myFormData = new FormData(e.target);
         const dataArray = [...myFormData];
         const data = Object.fromEntries(dataArray);
+        document.querySelector("form").reset();
         formulaire.envoiFormulaire(data);
     } 
 })
